@@ -3,7 +3,8 @@ arequest是php的curl简单封装请求，支持类似python的requests库支持
 
 ## 体验地址
 * 简单的通信请求
-`$curl = Curl::boot();
+```
+ $curl = Curl::boot();
  $url = 'http://xxxx';
  $params = ['a'=>'aaa', 'b'=>'bbb'];
  $headers = ['a'=>'aaa', 'b'=>'bbb'];
@@ -28,10 +29,11 @@ arequest是php的curl简单封装请求，支持类似python的requests库支持
      exit;
  }
  print_r($res);
-`
+```
 
 * 支持同个session的通信请求
-`$curl = CurlOfSession::boot();
+```
+ $curl = CurlOfSession::boot();
  $url1 = 'http://xxxx';
  $params = ['a'=>'aaa', 'b'=>'bbb'];
  $headers = ['a'=>'aaa', 'b'=>'bbb'];
@@ -66,4 +68,4 @@ arequest是php的curl简单封装请求，支持类似python的requests库支持
      exit;
  }
  print_r($res);
-`
+```
