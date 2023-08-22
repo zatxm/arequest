@@ -1,6 +1,7 @@
 {
     "name": "arequest",
     "description": "PHP's curl simply encapsulates requests and supports requests libraries similar to python to support session context",
+    "type": "library",
     "keywords": ["http", "session", "web service", "curl", "client", "HTTP client", "cookie"],
     "license": "MIT",
     "authors": [
