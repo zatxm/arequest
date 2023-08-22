@@ -1,0 +1,21 @@
+{
+    "name": "arequest",
+    "description": "PHP's curl simply encapsulates requests and supports requests libraries similar to python to support session context",
+    "keywords": ["http", "session", "web service", "curl", "client", "HTTP client", "cookie"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zatxm",
+            "email": "zatxm120@gmail.com",
+            "homepage": "https://github.com/zatxm"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ARequest\\": "src/"
+        }
+    }
+}
