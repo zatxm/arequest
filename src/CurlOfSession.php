@@ -4,10 +4,10 @@
  * 合并cookie带入下次请求中
  * 重定向也实现功能
  */
-namespace ARequest;
+namespace Zatxm\ARequest;
 
-use ARequest\Curl;
-use ARequest\CurlErr;
+use Zatxm\ARequest\Curl;
+use Zatxm\ARequest\CurlErr;
 
 class CurlOfSession
 {

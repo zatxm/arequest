@@ -2,9 +2,9 @@
 /**
  * 封装的curl请求
  */
-namespace ARequest;
+namespace Zatxm\ARequest;
 
-use ARequest\CurlErr;
+use Zatxm\ARequest\CurlErr;
 
 class Curl
 {

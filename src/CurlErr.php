@@ -2,7 +2,7 @@
 /**
  * 实用的错误类
  */
-namespace ARequest;
+namespace Zatxm\ARequest;
 
 class CurlErr
 {
