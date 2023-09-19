@@ -26,6 +26,7 @@ class Curl
     public static function boot()
     {
         if (self::$instance === null) {
+            set_time_limit(0);
             self::$instance = new self;
         }
         return self::$instance;
