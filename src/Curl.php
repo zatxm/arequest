@@ -215,6 +215,11 @@ class Curl
             }
         }
 
+        // 处理数据流
+        if (!empty($this->option['stream'])) {
+            $options[CURLOPT_WRITEFUNCTION] = $this->option['stream'];
+        }
+
         // 设置请求方式
         $method = $this->method ?: ($this->option['method'] ?? 'GET');
         $options[CURLOPT_CUSTOMREQUEST] = $method;
