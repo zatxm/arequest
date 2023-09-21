@@ -1,10 +1,10 @@
 # arequest
-arequest是php的curl简单封装请求，支持类似python的requests库支持session上下文关联请求，重定向也支持此功能
+arequest是php的curl简单封装请求，支持类似python的requests库支持session上下文关联请求，重定向也支持此功能，支持原生模拟浏览器TLS/JA3指纹的验证
 
 ## 体验地址
 * 安装<br>
   composer require zatxm/arequest
-* 支持原生模拟浏览器TLS/JA3指纹的验证<br>
+* 2.0.0版本开始支持原生模拟浏览器TLS/JA3指纹的验证<br>
   要开启此功能，前往[curl-impersonate](https://github.com/lwthiker/curl-impersonate)下载安装，最简单的就是下载编译号的二进制包直接放到可以直接运行的目录如/usr/local/bin<br>
   $option['cmdopt'] = '/usr/local/bin/curl_edge101'; //此值为curl-impersonate执行脚本位置,根据实际情况调整<br>
   此功能会直接返回响应头部和cookie
