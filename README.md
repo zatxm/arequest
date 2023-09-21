@@ -1,7 +1,7 @@
 # arequest
 arequest是php的curl简单封装请求，支持类似python的requests库支持session上下文关联请求，重定向也支持此功能，支持原生模拟浏览器TLS/JA3指纹的验证
 
-## 体验地址
+## 使用说明
 * 安装<br>
   composer require zatxm/arequest
 * 2.0.0版本开始支持原生模拟浏览器TLS/JA3指纹的验证<br>
