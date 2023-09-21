@@ -100,6 +100,107 @@ class Curl
     }
 
     /**
+     * 处理原生模拟浏览器TLS/JA3指纹的验证
+     * https://github.com/lwthiker/curl-impersonate
+     * @return mixed
+     */
+    private function goCmdopt()
+    {
+        $command = $this->option['cmdopt'];
+
+        // 请求头
+        $method = $this->method ?: ($this->option['method'] ?? 'GET');
+        $command .= " -X {$method}";
+
+        // 处理参数
+        // 如果是get、option不要传此值
+        $params = $this->params ?: ($this->option['params'] ?? null);
+        if (!empty($params)) {
+            if (is_array($params)) {
+                $command .= ' -d "' . http_build_query($params, '', '&', PHP_QUERY_RFC3986) . '"';
+            } elseif(is_string($params)) {
+                $command .= ' -d "' . $params . '"';
+            }
+        }
+
+        // 处理请求头
+        $reqHeaders = $this->header ?: ($this->option['header'] ?? null);
+        if ($reqHeaders && is_array($reqHeaders)) {
+            foreach ($reqHeaders as $k => $v) {
+                switch ($k) {
+                    case 'User-Agent': //此模式已经有了无需设置
+                        break;
+                    case 'Referer':
+                        $command .= ' -e "' . $v . '"';
+                        break;
+                    default:
+                        $command .= ' -H "' . $k . ': ' . $v . '"';
+                        break;
+                }
+            }
+        }
+
+        // 设置cookie
+        $cookies = $this->cookie ?: ($this->option['cookie'] ?? null);
+        if ($cookies) {
+            if (is_string($cookies) && strpos($cookies, '; ') !== false) {
+                $cookies = explode('; ', $cookies);
+            }
+            if (is_array($cookies)) {
+                foreach ($cookies as $k => $v) {
+                    $command .= '-b "' . $k . '=' . $v . '"';
+                }
+            }
+        }
+
+        // 是否异步请求并设置超时时间
+        $async = false;
+        if (!empty($this->option['async'])) {
+            $async = true;
+        } else {
+            $timeout = !empty($this->option['timeout']) ? intval($this->option['timeout']) : 30;
+            $command .= " --connect-timeout {$timeout}";
+        }
+
+        $command .= " -k -i {$this->url}";
+        $this->clear();
+        $handle = popen($command, 'r');
+        if (!$handle) {
+            return new CurlErr(-1000, 'popen error');
+        }
+        if ($async) {
+            pclose($handle);
+            return ['async'=>1]; //异步
+        }
+        $res = stream_get_contents($handle);
+        pclose($handle);
+
+        // 处理返回数据
+        if (strpos($res, "\r\n\r\n") === false) {
+            return new CurlErr(-1001, 'return context error', $res);
+        }
+        $res = explode("\r\n\r\n", $res, 2);
+        $data = ['data'=>['code'=>-1, 'msg'=>$res[1]]];
+        $resHeaders = $resCookies = [];
+        foreach (explode("\r\n", $res[0]) as $v) {
+            if (strpos($v, ': ')) {
+                // 过滤掉状态码，如HTTP/2 200
+                $v = explode(': ', $v, 2);
+                $resHeaders[] = [$v[0]=>$v[1]];
+                if ($v[0] == 'set-cookie') {
+                    $c = explode('=', $v[1], 2);
+                    $resCookies[$c[0]] = $c[1];
+                }
+            } elseif (strpos($v, 'HTTP/') !== false) {
+                $data['data']['code'] = explode(' ', $v, 2)[1];
+            }
+        }
+        $data['cookie'] = $resCookies;
+        $data['header'] = $resHeaders;
+        return $data;
+    }
+
+    /**
      * 请求
      * 返回[
      *         'async'  => 1, //异步返回
@@ -111,6 +212,11 @@ class Curl
      */
     public function go()
     {
+        // 处理原生模拟浏览器TLS/JA3指纹的验证
+        if (!empty($this->option['cmdopt'])) {
+            return $this->goCmdopt();
+        }
+
         $ch = curl_init($this->url);
 
         /***处理请求各种curl option***/
