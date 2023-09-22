@@ -148,7 +148,7 @@ class Curl
             }
             if (is_array($cookies)) {
                 foreach ($cookies as $k => $v) {
-                    $command .= '-b "' . $k . '=' . $v . '"';
+                    $command .= ' -b "' . $k . '=' . $v . '"';
                 }
             }
         }
@@ -162,7 +162,7 @@ class Curl
             $command .= " --connect-timeout {$timeout}";
         }
 
-        $command .= " -k -i {$this->url}";
+        $command .= ' -k -i "' . $this->url . '"';
         $this->clear();
         $handle = popen($command, 'r');
         if (!$handle) {
