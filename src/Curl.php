@@ -117,9 +117,9 @@ class Curl
         $params = $this->params ?: ($this->option['params'] ?? null);
         if (!empty($params)) {
             if (is_array($params)) {
-                $command .= ' -d "' . http_build_query($params, '', '&', PHP_QUERY_RFC3986) . '"';
+                $command .= " -d '" . http_build_query($params, '', '&', PHP_QUERY_RFC3986) . "'";
             } elseif(is_string($params)) {
-                $command .= ' -d "' . $params . '"';
+                $command .= " -d '{$params}'";
             }
         }
 
