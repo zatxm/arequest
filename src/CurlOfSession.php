@@ -79,7 +79,7 @@ class CurlOfSession
      */
     public function cookie($cookie = [])
     {
-        $this->cookie = $cookie;
+        $this->cookie = array_merge($this->cookie, $cookie);
         return $this;
     }
 
@@ -103,6 +103,44 @@ class CurlOfSession
     public function option($option = [])
     {
         $this->option = $option;
+        return $this;
+    }
+
+    /**
+     * 获取请求后cookie
+     * @return array
+     */
+    public function getCookie()
+    {
+        return $this->cookie;
+    }
+
+    /**
+     * 删除某个cookie
+     * @param  string $key cookie的key值
+     * @return this
+     */
+    public function removeOneCookie($key)
+    {
+        if (isset($this->cookie[$key])) {
+            unset($this->cookie[$key]);
+        }
+        return $this;
+    }
+
+    /**
+     * 设置无限制性cookie
+     * @return this
+     */
+    public function setCookieAllLimit()
+    {
+        if ($this->cookie) {
+            foreach ($this->cookie as $k => $v) {
+                if (strpos($v, '; ') !== false) {
+                    $this->cookie[$k] = explode('; ', $v)[0];
+                }
+            }
+        }
         return $this;
     }
 

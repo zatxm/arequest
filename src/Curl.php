@@ -26,7 +26,6 @@ class Curl
     public static function boot()
     {
         if (self::$instance === null) {
-            set_time_limit(0);
             self::$instance = new self;
         }
         return self::$instance;
@@ -212,6 +211,8 @@ class Curl
      */
     public function go()
     {
+        set_time_limit(0);
+
         // 处理原生模拟浏览器TLS/JA3指纹的验证
         if (!empty($this->option['cmdopt'])) {
             return $this->goCmdopt();
