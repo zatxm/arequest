@@ -221,10 +221,11 @@ class Curl
         $ch = curl_init($this->url);
 
         /***处理请求各种curl option***/
-        $options = [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FAILONERROR    => false
-        ];
+        // 支持原生配置只需传个p数组，但可能会被以下参数覆盖
+        $options = $this->option['p'] ?? [];
+
+        $options[CURLOPT_RETURNTRANSFER] = true;
+        $options[CURLOPT_FAILONERROR] = false;
 
         // 是否异步请求并设置超时时间
         $async = false;
