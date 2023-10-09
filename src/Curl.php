@@ -108,7 +108,7 @@ class Curl
         $command = $this->option['cmdopt'];
 
         // 请求头
-        $method = $this->method ?: ($this->option['method'] ?? 'GET');
+        $method = $this->method ?: ($this->option['method'] ?? ($this->option['p'][CURLOPT_CUSTOMREQUEST] ?? 'GET'));
         $command .= " -X {$method}";
 
         // 处理参数
@@ -117,9 +117,11 @@ class Curl
         if (!empty($params)) {
             if (is_array($params)) {
                 $command .= " -d '" . http_build_query($params, '', '&', PHP_QUERY_RFC3986) . "'";
-            } elseif(is_string($params)) {
+            } elseif (is_string($params)) {
                 $command .= " -d '{$params}'";
             }
+        } elseif (!empty($this->option['p'][CURLOPT_POSTFIELDS])) {
+            $command .= " -d '" . $this->option['p'][CURLOPT_POSTFIELDS] . "'";
         }
 
         // 处理请求头
@@ -137,6 +139,10 @@ class Curl
                         break;
                 }
             }
+        } elseif (!empty($this->option['p'][CURLOPT_HTTPHEADER])) {
+            foreach ($this->option['p'][CURLOPT_HTTPHEADER] as $v) {
+                $command .= ' -H "' . $v . '"';
+            }
         }
 
         // 设置cookie
@@ -150,6 +156,8 @@ class Curl
                     $command .= ' -b "' . $k . '=' . $v . '"';
                 }
             }
+        } elseif (!empty($this->option['p'][CURLOPT_COOKIE])) {
+            $command .= ' -b "' . $this->option['p'][CURLOPT_COOKIE] . '"';
         }
 
         // 是否异步请求并设置超时时间
@@ -159,6 +167,13 @@ class Curl
         } else {
             $timeout = !empty($this->option['timeout']) ? intval($this->option['timeout']) : 30;
             $command .= " --connect-timeout {$timeout}";
+        }
+
+        // 设置代理
+        if (!empty($this->option['proxy'])) {
+            $command .= ' -x "' . $this->option['proxy'] . '"';
+        } elseif (!empty($this->option['p'][CURLOPT_PROXY])) {
+            $command .= ' -x "' . $this->option['p'][CURLOPT_PROXY] . '"';
         }
 
         $command .= ' -k -i "' . $this->url . '"';
@@ -327,6 +342,11 @@ class Curl
         // 处理数据流
         if (!empty($this->option['stream'])) {
             $options[CURLOPT_WRITEFUNCTION] = $this->option['stream'];
+        }
+
+        // 设置代理
+        if (!empty($this->option['proxy'])) {
+            $options[CURLOPT_PROXY] = $this->option['proxy'];
         }
 
         // 设置请求方式
