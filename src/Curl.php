@@ -178,7 +178,7 @@ class Curl
 
         $command .= ' -k -i "' . $this->url . '"';
         $this->clear();
-        $handle = popen($command, 'r');
+        $handle = popen($command, 'rb');
         if (!$handle) {
             return new CurlErr(-1000, 'popen error');
         }
