@@ -11,7 +11,7 @@ use Zatxm\ARequest\CurlErr;
 
 class CurlOfSession
 {
-    private static $instance = null; //本实例
+    private static $instances = null; //本实例
     private $curl = null; //curl实例
     private $url = ''; //请求url
     private $method = 'GET'; //请求方式,默认GET
@@ -31,13 +31,15 @@ class CurlOfSession
      * 单实例初始化类
      * @return this
      */
-    public static function boot()
+    public static function boot($key = 'one')
     {
-        if (self::$instance === null) {
-            self::$instance = new self;
-            self::$instance->curl = Curl::boot();
+        if (isset(self::$instances[$key])) {
+            return self::$instances[$key];
         }
-        return self::$instance;
+        $instance = new self;
+        $instance->curl = Curl::boot();
+        self::$instances[$key] = $instance;
+        return $instance;
     }
 
     /**

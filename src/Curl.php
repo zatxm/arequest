@@ -194,6 +194,12 @@ class Curl
             return new CurlErr(-1001, 'return context error', $res);
         }
         $res = explode("\r\n\r\n", $res, 2);
+        $isWhile = strpos($res[1], "\r\n\r\n") !== false && strpos($res[1], 'HTTP/') === 0;
+        while ($isWhile) {
+            $res = $res[1];
+            $res = explode("\r\n\r\n", $res, 2);
+            $isWhile = strpos($res[1], "\r\n\r\n") !== false && strpos($res[1], 'HTTP/') === 0;
+        }
         $data = ['data'=>['code'=>-1, 'msg'=>$res[1]]];
         $resHeaders = $resCookies = [];
         foreach (explode("\r\n", $res[0]) as $v) {
