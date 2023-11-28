@@ -24,6 +24,7 @@ class CurlOfSession
     private $location = ''; //重定向url
     private $old = []; //历史数据
     private $shareOption = []; //全局option
+    private $shareHeaders = [];
 
     private function __construct() {}
 
@@ -159,6 +160,26 @@ class CurlOfSession
     }
 
     /**
+     * 获取全局option
+     * @return array  $option 全局option
+     */
+    public function getShareOption()
+    {
+        return $this->shareOption;
+    }
+
+    /**
+     * 设置全局header
+     * @param  array  $option 全局option
+     * @return this
+     */
+    public function shareHeaders($headers = [])
+    {
+        $this->shareHeaders = $headers;
+        return $this;
+    }
+
+    /**
      * 请求
      * 返回[
      *         'data'   => ['code'=>'状态码', 'msg'=>'内容', 'location'=>'重定向url'],
@@ -170,6 +191,7 @@ class CurlOfSession
     public function go()
     {
         $this->option = array_merge($this->shareOption, $this->option);
+        $this->header = array_merge($this->shareHeaders, $this->header);
         // 总是返回header和cookie,cookie会带入下次请求
         $this->option['resheader'] = $this->option['rescookie'] = 1;
         // 是否有重定向
